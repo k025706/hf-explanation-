@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>心不全 説明用紙 作成ツール</title>
+<style>
+  :root {
+    --navy: #234059;
+    --navy-light: #3a5d7a;
+    --bg: #eef2f5;
+    --card: #ffffff;
+    --border: #d6dde3;
+    --accent: #5b8aa6;
+    --accent-bg: #e7eff4;
+    --text: #2a2f36;
+    --muted: #6b7480;
+    --danger: #b3534a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .app {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+  }
+  header.page-header {
+    padding: 20px 24px;
+    background: var(--navy);
+    color: #fff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  header.page-header h1 {
+    margin: 0 0 4px;
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+  }
+  header.page-header p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #cfe0ec;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    font-size: 1.05rem;
+    margin: 0 0 12px;
+    color: var(--navy);
+    border-left: 4px solid var(--accent);
+    padding-left: 10px;
+  }
+  .card h3 {
+    font-size: 0.92rem;
+    margin: 14px 0 8px;
+    color: var(--navy-light);
+  }
+  .field-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .field-row label.name-label {
+    font-weight: bold;
+    white-space: nowrap;
+  }
+  .field-row input[type="text"] {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .choice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 6px 16px;
+  }
+  .choice-grid label, .radio-row label {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 0.92rem;
+    cursor: pointer;
+    padding: 3px 0;
+  }
+  .radio-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  input[type="checkbox"], input[type="radio"] {
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+  .valve-matrix table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.92rem;
+  }
+  .valve-matrix th, .valve-matrix td {
+    border: 1px solid var(--border);
+    padding: 8px 12px;
+    text-align: center;
+  }
+  .valve-matrix th {
+    background: var(--accent-bg);
+    color: var(--navy);
+    font-weight: bold;
+  }
+  .valve-matrix td:first-child {
+    text-align: left;
+    font-weight: bold;
+    background: #fafcfd;
+  }
+  .note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  /* 基礎疾患: 折りたたみカテゴリ */
+  details.cat {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: #fafcfd;
+  }
+  details.cat summary {
+    cursor: pointer;
+    padding: 10px 14px;
+    font-weight: bold;
+    color: var(--navy-light);
+    font-size: 0.95rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    user-select: none;
+  }
+  details.cat summary::-webkit-details-marker { display: none; }
+  details.cat summary::before {
+    content: '▸';
+    color: var(--accent);
+    transition: transform 0.15s;
+  }
+  details.cat[open] summary::before { transform: rotate(90deg); }
+  details.cat .cat-body { padding: 2px 16px 14px; }
+  .cat-count {
+    display: none;
+    font-size: 0.74rem;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 10px;
+    padding: 1px 9px;
+    font-weight: normal;
+  }
+  .cat-count.has { display: inline-block; }
+  .single-cat {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: #fafcfd;
+    padding: 10px 14px;
+  }
+  .single-cat label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    color: var(--navy-light);
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-left: 18px;
+  }
+  .other-free {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.92rem;
+    font-family: inherit;
+    margin-top: 4px;
+  }
+  .other-free-label {
+    font-size: 0.86rem;
+    font-weight: bold;
+    color: var(--navy-light);
+  }
+  .other-free-row { margin-top: 10px; }
+  .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    background: var(--navy);
+    color: #fff;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .btn.secondary {
+    background: var(--accent);
+  }
+  .btn.outline {
+    background: transparent;
+    color: var(--navy);
+    border: 1px solid var(--navy);
+    font-weight: normal;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+  .btn.danger-outline {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    font-weight: normal;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+  }
+  .action-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 18px 0;
+  }
+  textarea#generatedText {
+    width: 100%;
+    min-height: 260px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    line-height: 1.9;
+    font-family: inherit;
+    resize: vertical;
+  }
+  textarea#freeNote {
+    width: 100%;
+    min-height: 70px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    resize: vertical;
+  }
+
+  /* 画像ライブラリ */
+  .image-lib-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .image-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    background: #fafcfd;
+    text-align: center;
+  }
+  .image-item img {
+    width: 100%;
+    height: 90px;
+    object-fit: contain;
+    border-radius: 4px;
+    background: #fff;
+    margin-bottom: 6px;
+  }
+  .image-item .img-name {
+    font-size: 0.78rem;
+    word-break: break-all;
+    margin-bottom: 6px;
+  }
+  .image-item .img-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-bottom: 6px;
+  }
+  .image-item label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+  }
+  .upload-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* 印刷プレビュー */
+  #printArea {
+    background: #fff;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+  }
+  #printArea h2.sheet-title {
+    text-align: center;
+    font-size: 1.25rem;
+    color: var(--navy);
+    margin: 0 0 18px;
+    border: none;
+    padding: 0;
+  }
+  #printArea .sheet-text {
+    white-space: pre-wrap;
+    font-size: 1.02rem;
+    line-height: 2;
+  }
+  #printArea .sheet-images {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 24px;
+  }
+  #printArea .sheet-images img {
+    width: 100%;
+    max-height: 260px;
+    object-fit: contain;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+  }
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin-top: 30px;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .app { max-width: none; padding: 0; }
+    header.page-header, .card:not(#printCard), .action-bar, .footer-note {
+      display: none !important;
+    }
+    #printCard {
+      border: none;
+      padding: 0;
+      margin: 0;
+    }
+    #printCard h2:not(.sheet-title) { display: none; }
+    #printArea {
+      border: none;
+      padding: 0;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="page-header">
+    <h1>心不全 説明用紙 作成ツール</h1>
+    <p>選択した内容から説明文を自動生成し、印刷用シートを作成します(院内利用・完全ローカル動作)</p>
+    <p>入力内容・画像はこの端末のブラウザ内(localStorage / IndexedDB)にのみ保存され、外部には一切送信されません。</p>
+  </header>
+
+  <!-- 患者情報 -->
+  <div class="card">
+    <h2>患者情報</h2>
+    <div class="field-row">
+      <label class="name-label" for="patientName">患者氏名(敬称略)</label>
+      <input type="text" id="patientName" placeholder="例: 山田 太郎" disabled>
+    </div>
+    <label style="display:flex; align-items:center; gap:6px; font-size:0.9rem; cursor:pointer;">
+      <input type="checkbox" id="handwriteName" checked>
+      氏名は印刷後に手書きで記入する(氏名を端末に保存しません・推奨)
+    </label>
+    <div class="note">手書きモードでは、説明文・タイトルの氏名部分が下線「＿＿＿＿」になります。チェックを外すと氏名を入力でき、文中の「〇〇さん」に反映されます(入力した氏名はこの端末に自動保存されます)。</div>
+  </div>
+
+  <!-- 病型分類 -->
+  <div class="card">
+    <h2>① 心不全の病型分類(いずれか1つ)</h2>
+    <div class="radio-row">
+      <label><input type="radio" name="hfType" value="HFrEF"> 心臓の収縮(ポンプ機能)が低下したタイプ(HFrEF)</label>
+      <label><input type="radio" name="hfType" value="HFmrEF"> 収縮はやや低下しているが、保たれている部分もあるタイプ(HFmrEF)</label>
+      <label><input type="radio" name="hfType" value="HFpEF"> 収縮は保たれているが、心臓が硬くなり広がりが悪いタイプ(HFpEF)</label>
+      <label><input type="radio" name="hfType" value="不明" checked> 現在評価中・分類は未確定</label>
+    </div>
+  </div>
+
+  <!-- 基礎疾患 -->
+  <div class="card">
+    <h2>② 心不全の原因と考えられる基礎疾患(複数選択可)</h2>
+    <div class="note" style="margin-bottom:10px;">カテゴリ名をクリックすると選択肢が開きます。選択中の項目数はカテゴリ名の横に表示されます。</div>
+
+    <details class="cat">
+      <summary>虚血性心疾患 <span class="cat-count"></span></summary>
+      <div class="cat-body choice-grid">
+        <label><input type="checkbox" data-cat="base" value="心筋梗塞(陳旧性)"> 心筋梗塞(陳旧性)</label>
+        <label><input type="checkbox" data-cat="base" value="心筋梗塞(急性)"> 心筋梗塞(急性)</label>
+        <label><input type="checkbox" data-cat="base" value="狭心症"> 狭心症</label>
+      </div>
+    </details>
+
+    <details class="cat">
+      <summary>弁膜症 <span class="cat-count"></span></summary>
+      <div class="cat-body">
+        <div class="valve-matrix">
+          <table>
+            <tr>
+              <th>弁</th><th>狭窄</th><th>逆流</th>
+            </tr>
+            <tr>
+              <td>大動脈弁</td>
+              <td><input type="checkbox" data-cat="valve" value="大動脈弁狭窄症"></td>
+              <td><input type="checkbox" data-cat="valve" value="大動脈弁の逆流"></td>
+            </tr>
+            <tr>
+              <td>僧帽弁</td>
+              <td><input type="checkbox" data-cat="valve" value="僧帽弁狭窄症"></td>
+              <td><input type="checkbox" data-cat="valve" value="僧帽弁の逆流"></td>
+            </tr>
+            <tr>
+              <td>三尖弁</td>
+              <td><input type="checkbox" data-cat="valve" value="三尖弁狭窄症"></td>
+              <td><input type="checkbox" data-cat="valve" value="三尖弁の逆流"></td>
+            </tr>
+            <tr>
+              <td>肺動脈弁</td>
+              <td><input type="checkbox" data-cat="valve" value="肺動脈弁狭窄症"></td>
+              <td><input type="checkbox" data-cat="valve" value="肺動脈弁の逆流"></td>
+            </tr>
+          </table>
+          <div class="note">複数の弁・病態を同時に選択できます(連合弁膜症・複合弁膜症に対応)。</div>
+        </div>
+      </div>
+    </details>
+
+    <details class="cat">
+      <summary>心筋症 <span class="cat-count"></span></summary>
+      <div class="cat-body choice-grid">
+        <label><input type="checkbox" data-cat="base" value="高血圧性心疾患"> 高血圧性心疾患</label>
+        <label><input type="checkbox" data-cat="base" value="拡張型心筋症"> 拡張型心筋症</label>
+        <label><input type="checkbox" data-cat="base" value="肥大型心筋症"> 肥大型心筋症</label>
+        <label><input type="checkbox" data-cat="base" value="心サルコイドーシス"> 心サルコイドーシス</label>
+        <label><input type="checkbox" data-cat="base" value="心アミロイドーシス"> 心アミロイドーシス</label>
+        <label><input type="checkbox" data-cat="base" value="その他の心筋症"> その他の心筋症</label>
+      </div>
+    </details>
+
+    <details class="cat">
+      <summary>不整脈 <span class="cat-count"></span></summary>
+      <div class="cat-body choice-grid">
+        <label><input type="checkbox" data-cat="base" value="心房細動"> 心房細動</label>
+        <label><input type="checkbox" data-cat="base" value="心房頻拍"> 心房頻拍</label>
+        <label><input type="checkbox" data-cat="base" value="頻回の心室性期外収縮"> 頻回の心室性期外収縮</label>
+      </div>
+    </details>
+
+    <details class="cat">
+      <summary>その他 <span class="cat-count"></span></summary>
+      <div class="cat-body">
+        <div class="choice-grid">
+          <label><input type="checkbox" data-cat="base" value="先天性心疾患"> 先天性心疾患</label>
+          <label><input type="checkbox" id="causeUnknown" value="原因不明・精査中"> 原因不明・精査中(この入院中に詳しく検査します)</label>
+        </div>
+        <div style="margin-top:10px;">
+          <label for="otherCauseText" style="font-size:0.86rem; font-weight:bold; color: var(--navy-light);">上記にない基礎疾患(自由記載・「、」区切りで複数入力可)</label>
+          <input type="text" id="otherCauseText" class="other-free" placeholder="例: 心臓手術後、甲状腺の病気">
+          <div class="note">ここに入力した内容は、説明文の原因リストにそのまま追加されます(患者さんに伝わる平易な表現を推奨します)。</div>
+        </div>
+      </div>
+    </details>
+  </div>
+
+  <!-- 増悪要因 -->
+  <div class="card">
+    <h2>③ 今回の増悪要因(誘因)と考えられるもの(複数選択可)</h2>
+    <div class="choice-grid">
+      <label><input type="checkbox" data-cat="exac" value="塩分・水分摂取過多"> 塩分・水分摂取過多</label>
+      <label><input type="checkbox" data-cat="exac" value="内服薬の飲み忘れ・自己中断"> 内服薬の飲み忘れ・自己中断</label>
+      <label><input type="checkbox" data-cat="exac" value="感染症(肺炎・感冒など)"> 感染症(肺炎・感冒など)</label>
+      <label><input type="checkbox" data-cat="exac" value="不整脈の出現・悪化"> 不整脈の出現・悪化</label>
+      <label><input type="checkbox" data-cat="exac" value="血圧コントロール不良"> 血圧コントロール不良</label>
+      <label><input type="checkbox" data-cat="exac" value="過労・身体的・精神的ストレス"> 過労・身体的・精神的ストレス</label>
+      <label><input type="checkbox" data-cat="exac" value="過度な運動制限または運動不足"> 過度な運動制限または運動不足</label>
+      <label><input type="checkbox" data-cat="exac" value="貧血"> 貧血</label>
+      <label><input type="checkbox" data-cat="exac" value="腎機能の悪化"> 腎機能の悪化</label>
+      <label><input type="checkbox" data-cat="exac" value="薬剤(消炎鎮痛薬など)の影響"> 薬剤(消炎鎮痛薬など)の影響</label>
+      <label><input type="checkbox" data-cat="exac" value="季節・気温の変化(暑さ・寒さ)"> 季節・気温の変化(暑さ・寒さ)</label>
+      <label><input type="checkbox" data-cat="exac" value="飲酒"> 飲酒</label>
+    </div>
+    <div class="other-free-row">
+      <label class="other-free-label" for="otherExacText">その他の増悪要因(自由記載・「、」区切りで複数入力可)</label>
+      <input type="text" id="otherExacText" class="other-free" placeholder="例: 旅行による疲労">
+    </div>
+  </div>
+
+  <!-- 検査・治療 -->
+  <div class="card">
+    <h2>④ この入院中に行う検査・治療(複数選択可)</h2>
+    <div class="choice-grid">
+      <label><input type="checkbox" data-cat="test" value="心エコー検査"> 心エコー検査</label>
+      <label><input type="checkbox" data-cat="test" value="血液検査"> 血液検査</label>
+      <label><input type="checkbox" data-cat="test" value="心臓カテーテル検査"> 心臓カテーテル検査</label>
+      <label><input type="checkbox" data-cat="test" value="利尿薬による体液管理"> 利尿薬による体液管理</label>
+      <label><input type="checkbox" data-cat="test" value="内服薬の調整(導入・増量)"> 内服薬の調整(導入・増量)</label>
+      <label><input type="checkbox" data-cat="test" value="心臓リハビリテーション"> 心臓リハビリテーション</label>
+      <label><input type="checkbox" data-cat="test" value="生活指導・栄養指導"> 生活指導・栄養指導</label>
+    </div>
+    <div class="other-free-row">
+      <label class="other-free-label" for="otherTestText">その他の検査・治療(自由記載・「、」区切りで複数入力可)</label>
+      <input type="text" id="otherTestText" class="other-free" placeholder="例: 心臓MRI検査">
+    </div>
+  </div>
+
+  <!-- 生活指導 -->
+  <div class="card">
+    <h2>⑤ 再発予防のための生活指導項目(複数選択可)</h2>
+    <div class="choice-grid">
+      <label><input type="checkbox" data-cat="life" value="塩分制限(1日6g未満)"> 塩分制限(1日6g未満)</label>
+      <label><input type="checkbox" data-cat="life" value="水分管理"> 水分管理</label>
+      <label><input type="checkbox" data-cat="life" value="毎日同じ条件での体重測定"> 毎日同じ条件での体重測定</label>
+      <label><input type="checkbox" data-cat="life" value="内服薬の継続"> 内服薬の継続</label>
+      <label><input type="checkbox" data-cat="life" value="適度な運動の継続"> 適度な運動の継続</label>
+      <label><input type="checkbox" data-cat="life" value="感染予防(ワクチン接種を含む)"> 感染予防(ワクチン接種を含む)</label>
+      <label><input type="checkbox" data-cat="life" value="禁煙・節酒"> 禁煙・節酒</label>
+      <label><input type="checkbox" data-cat="life" value="症状悪化時の早期受診"> 症状悪化時の早期受診(増悪サインへの注意)</label>
+    </div>
+    <div class="other-free-row">
+      <label class="other-free-label" for="otherLifeText">その他の生活指導(自由記載・「、」区切りで複数入力可)</label>
+      <input type="text" id="otherLifeText" class="other-free" placeholder="例: 入浴方法の工夫">
+    </div>
+  </div>
+
+  <!-- 追加のご説明(定型文) -->
+  <div class="card">
+    <h2>⑥ 今後の見通し・追加のご説明(該当するものを選択)</h2>
+    <div class="choice-grid" style="grid-template-columns: 1fr;">
+      <label><input type="checkbox" data-cat="extra" value="必要に応じて、施設入所や、リハビリ入院、療養病院への転院等の可能性があります。"> 必要に応じて、施設入所や、リハビリ入院、療養病院への転院等の可能性があります。</label>
+      <label><input type="checkbox" data-cat="extra" value="自宅での生活を継続する為に社会保障サービス(介護保険サービスなど)の導入も考慮します。"> 自宅での生活を継続する為に社会保障サービス(介護保険サービスなど)の導入も考慮します。</label>
+      <label><input type="checkbox" data-cat="extra" value="病状としては重篤であり、入院中に急に具合が悪くなる可能性などもあり、注意して経過を見ていきますが、万が一の場合に備えてご家族様の中でもよく相談してみていただけますと幸いです。"> 病状としては重篤であり、入院中に急に具合が悪くなる可能性などもあり、注意して経過を見ていきますが、万が一の場合に備えてご家族様の中でもよく相談してみていただけますと幸いです。</label>
+    </div>
+    <div class="note">選択した文章は、説明文の本文の後(補足コメントの前)にそのまま追加されます。</div>
+  </div>
+
+  <!-- 自由記載 -->
+  <div class="card">
+    <h2>⑦ 補足コメント(自由記載・任意)</h2>
+    <textarea id="freeNote" placeholder="生成文の末尾に追記したい内容があれば入力してください"></textarea>
+  </div>
+
+  <!-- 生成操作 -->
+  <div class="action-bar">
+    <button class="btn" onclick="generateText()">説明文を生成・更新</button>
+    <button class="btn danger-outline" onclick="clearForm()">入力内容をクリア(新規作成)</button>
+    <span class="note" id="saveStatus"></span>
+  </div>
+
+  <!-- 生成文(編集可) -->
+  <div class="card">
+    <h2>説明文(生成後に自由に編集できます)</h2>
+    <textarea id="generatedText" placeholder="上の項目を選択して「説明文を生成・更新」を押してください"></textarea>
+  </div>
+
+  <!-- 画像ライブラリ -->
+  <div class="card">
+    <h2>画像ライブラリ(最大4枚まで説明用紙に挿入)</h2>
+    <div class="upload-row">
+      <input type="file" id="imageUpload" accept="image/*" multiple>
+      <span class="note" id="selectedCount">選択中: 0 / 4</span>
+      <span id="presetRestoreWrap"></span>
+    </div>
+    <div class="note">ファイル選択で画像を追加(複数可)・各画像の「削除」で削除できます。追加した画像はこの端末のブラウザ内(IndexedDB)にのみ保存されます。チェックを入れた画像(最大4枚)が説明用紙に挿入されます。「標準画像」はファイル本体に埋め込まれた共通画像で、「非表示」で一覧から外せます(現在は未登録)。</div>
+    <div class="image-lib-grid" id="imageLibGrid"></div>
+  </div>
+
+  <!-- 印刷プレビュー -->
+  <div class="card" id="printCard">
+    <h2>印刷プレビュー</h2>
+    <div class="action-bar">
+      <button class="btn secondary" onclick="window.print()">この内容を印刷する</button>
+    </div>
+    <div id="printArea">
+      <h2 class="sheet-title" id="sheetTitle">心不全についてのご説明</h2>
+      <div class="sheet-text" id="sheetText">(説明文を生成すると、ここに表示されます)</div>
+      <div class="sheet-images" id="sheetImages"></div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    本ツールはローカル環境での説明資料作成支援を目的としています。最終的な内容は必ず担当医がご確認ください。<br>
+    入力内容はこの端末のブラウザ内にのみ自動保存されます(外部送信なし)。共用PCで使用する場合は、作業終了後に「入力内容をクリア(新規作成)」で患者情報を消去してください。
+  </div>
+</div>
+
+<script>
+/* ============ 文章生成ロジック ============ */
+
+function joinJapaneseList(items) {
+  if (items.length === 0) return '';
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return items[0] + 'や' + items[1];
+  return items.slice(0, -1).join('、') + '、' + items[items.length - 1] + 'など';
+}
+
+function getCheckedValues(selector) {
+  return Array.from(document.querySelectorAll(selector))
+    .filter(el => el.checked)
+    .map(el => el.value);
+}
+
+const hfTypeSentences = {
+  'HFrEF': '心臓は血液を送り出すポンプとしての力(収縮機能)が低下しており、これが心不全の主な要因の一つと考えられます。',
+  'HFmrEF': '心臓のポンプとしての力(収縮機能)はやや低下していますが、一部の機能は保たれている状態です。',
+  'HFpEF': '心臓のポンプとしての力(収縮機能)は保たれていますが、心臓の壁が硬くなり、血液を取り込む際の広がり(拡張機能)が低下しており、これが心不全の主な要因の一つと考えられます。',
+  '不明': ''
+};
+
+// 自由記載を「、」「,」区切りで項目化(汎用)
+function parseFreeList(id) {
+  const el = document.getElementById(id);
+  if (!el) return [];
+  const raw = el.value.trim();
+  if (!raw) return [];
+  return raw.split(/[、,]/).map(s => s.trim()).filter(Boolean);
+}
+
+// その他カテゴリの自由記載を「、」「,」区切りで項目化
+function parseOtherCauses() {
+  return parseFreeList('otherCauseText');
+}
+
+// 表示用の氏名(手書きモードなら下線、未入力なら〇〇)
+function getDisplayName() {
+  if (document.getElementById('handwriteName').checked) return '＿＿＿＿';
+  return document.getElementById('patientName').value.trim() || '〇〇';
+}
+
+// 各カテゴリの選択数バッジを更新(openSelected=true で選択ありカテゴリを開く)
+function updateCatCounts(openSelected) {
+  document.querySelectorAll('details.cat').forEach(d => {
+    const badge = d.querySelector('.cat-count');
+    if (!badge) return;
+    let n = d.querySelectorAll('input[type="checkbox"]:checked').length;
+    if (d.querySelector('#otherCauseText')) {
+      n += parseOtherCauses().length;
+    }
+    badge.textContent = `${n}件選択中`;
+    badge.classList.toggle('has', n > 0);
+    if (openSelected && n > 0) d.open = true;
+  });
+}
+
+function generateText() {
+  // 手動編集の上書き保護(仕様書 既知課題1への対応)
+  const currentText = document.getElementById('generatedText').value.trim();
+  if (manuallyEdited && currentText) {
+    if (!confirm('説明文は手動で編集されています。\n再生成すると編集内容は上書きされます。続行しますか?')) {
+      return;
+    }
+  }
+
+  const name = getDisplayName();
+
+  // ① 病型
+  const hfTypeEl = document.querySelector('input[name="hfType"]:checked');
+  const hfType = hfTypeEl ? hfTypeEl.value : '不明';
+  const hfSentence = hfTypeSentences[hfType];
+
+  // ② 基礎疾患(通常項目 + 弁膜症マトリクス + 自由記載)
+  const baseItems = getCheckedValues('input[data-cat="base"]');
+  const valveItems = getCheckedValues('input[data-cat="valve"]');
+  const otherItems = parseOtherCauses();
+  const causeUnknown = document.getElementById('causeUnknown').checked;
+  const allCauseItems = baseItems.concat(valveItems, otherItems);
+
+  let causeSentence;
+  if (allCauseItems.length === 0) {
+    causeSentence = '現時点では原因がはっきりと分かっていないため、今後入院中に詳しい検査を行いたいと思います。';
+  } else {
+    causeSentence = joinJapaneseList(allCauseItems) + 'が原因の可能性があると考えています。';
+    if (causeUnknown) {
+      causeSentence += 'また、他に原因となる病気が隠れていないか、入院中にさらに詳しい検査を行う予定です。';
+    }
+  }
+
+  // ③ 増悪要因(チェック + 自由記載)
+  const exacItems = getCheckedValues('input[data-cat="exac"]').concat(parseFreeList('otherExacText'));
+  let exacSentence;
+  if (exacItems.length === 0) {
+    exacSentence = `${name}さんにおいては、現在増悪要因を確認中です。`;
+  } else {
+    exacSentence = `${name}さんにおいては、${joinJapaneseList(exacItems)}が増悪要因と考えられています。`;
+  }
+
+  // ④ 検査・治療(チェック + 自由記載)
+  const testItems = getCheckedValues('input[data-cat="test"]').concat(parseFreeList('otherTestText'));
+  const testPhrase = testItems.length > 0 ? joinJapaneseList(testItems) : '必要な検査・治療';
+
+  // ⑤ 生活指導(チェック + 自由記載)
+  const lifeItems = getCheckedValues('input[data-cat="life"]').concat(parseFreeList('otherLifeText'));
+  const lifePhrase = lifeItems.length > 0 ? joinJapaneseList(lifeItems) : '生活上の注意点';
+
+  // 全体組み立て
+  let text = '';
+  text += `${name}さんは、心不全増悪のために入院となりました。\n`;
+  text += `心不全は、何が原因であっても発症しますが、${name}さんの心不全は、${causeSentence}\n`;
+  if (hfSentence) {
+    text += `また、${name}さんの${hfSentence}\n`;
+  }
+  text += `\nまた、心不全は弱った心臓に何らかの負担がかかると発症します。${exacSentence}\n`;
+  text += `\nこの入院中に${testPhrase}を行うだけではなく、こういった増悪要因を理解し、心不全を再発させないための生活の送り方(${lifePhrase})に関してもよく理解していただきたいと思います。`;
+
+  // ⑥ 今後の見通し・追加のご説明(選択式)
+  const extraItems = getCheckedValues('input[data-cat="extra"]');
+  if (extraItems.length > 0) {
+    text += '\n\n' + extraItems.join('\n');
+  }
+
+  // ⑦ 補足コメント
+  const freeNote = document.getElementById('freeNote').value.trim();
+  if (freeNote) {
+    text += `\n\n【補足】\n${freeNote}`;
+  }
+
+  document.getElementById('generatedText').value = text;
+  manuallyEdited = false;
+  updatePreview();
+  saveFormState();
+}
+
+function updatePreview() {
+  const name = getDisplayName();
+  document.getElementById('sheetTitle').textContent = `${name}さんへ:心不全についてのご説明`;
+  const generated = document.getElementById('generatedText').value;
+  document.getElementById('sheetText').textContent = generated || '(説明文を生成すると、ここに表示されます)';
+}
+
+document.getElementById('generatedText').addEventListener('input', () => {
+  manuallyEdited = true;
+  updatePreview();
+  scheduleSave();
+});
+document.getElementById('patientName').addEventListener('input', () => {
+  updatePreview();
+  scheduleSave();
+});
+
+/* ============ 入力内容のローカル自動保存(localStorage・外部送信なし) ============ */
+
+const FORM_STATE_KEY = 'hfTool_formState';
+let manuallyEdited = false;   // 説明文が手動編集されたか(再生成時の上書き保護に使用)
+let suppressSave = false;     // 復元処理中の保存抑止
+let saveTimer = null;
+
+function scheduleSave() {
+  if (suppressSave) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveFormState, 400);
+}
+
+function saveFormState() {
+  if (suppressSave) return;
+  const hfTypeEl = document.querySelector('input[name="hfType"]:checked');
+  const handwrite = document.getElementById('handwriteName').checked;
+  const state = {
+    handwriteName: handwrite,
+    patientName: handwrite ? '' : document.getElementById('patientName').value,  // 手書きモードでは氏名を端末に保存しない
+    hfType: hfTypeEl ? hfTypeEl.value : '不明',
+    checked: Array.from(document.querySelectorAll('input[data-cat]'))
+      .filter(cb => cb.checked).map(cb => cb.value),
+    causeUnknown: document.getElementById('causeUnknown').checked,
+    otherCauseText: document.getElementById('otherCauseText').value,
+    otherExacText: document.getElementById('otherExacText').value,
+    otherTestText: document.getElementById('otherTestText').value,
+    otherLifeText: document.getElementById('otherLifeText').value,
+    freeNote: document.getElementById('freeNote').value,
+    generatedText: document.getElementById('generatedText').value,
+    manuallyEdited: manuallyEdited,
+    savedAt: Date.now()
+  };
+  try {
+    localStorage.setItem(FORM_STATE_KEY, JSON.stringify(state));
+    updateSaveStatus(state.savedAt);
+  } catch (e) {
+    // 容量超過等。説明文・選択項目はテキスト主体のため通常は発生しない
+    console.warn('自動保存に失敗しました:', e);
+  }
+}
+
+function restoreFormState() {
+  let state = null;
+  try {
+    state = JSON.parse(localStorage.getItem(FORM_STATE_KEY));
+  } catch (e) { /* 破損データは無視 */ }
+  if (!state) return;
+
+  suppressSave = true;
+  // 手書きモード: 旧バージョンの保存データ(フラグなし)では氏名入力済みなら手書きOFFとみなす
+  const handwrite = (state.handwriteName !== undefined)
+    ? !!state.handwriteName
+    : !(state.patientName && state.patientName.trim());
+  document.getElementById('handwriteName').checked = handwrite;
+  document.getElementById('patientName').value = state.patientName || '';
+  document.getElementById('patientName').disabled = handwrite;
+  const radio = document.querySelector(`input[name="hfType"][value="${state.hfType || '不明'}"]`);
+  if (radio) radio.checked = true;
+  const checkedSet = new Set(state.checked || []);
+  document.querySelectorAll('input[data-cat]').forEach(cb => {
+    cb.checked = checkedSet.has(cb.value);
+  });
+  document.getElementById('causeUnknown').checked = !!state.causeUnknown;
+  document.getElementById('otherCauseText').value = state.otherCauseText || '';
+  document.getElementById('otherExacText').value = state.otherExacText || '';
+  document.getElementById('otherTestText').value = state.otherTestText || '';
+  document.getElementById('otherLifeText').value = state.otherLifeText || '';
+  document.getElementById('freeNote').value = state.freeNote || '';
+  document.getElementById('generatedText').value = state.generatedText || '';
+  manuallyEdited = !!state.manuallyEdited;
+  suppressSave = false;
+
+  updateCatCounts(true);  // 選択済みカテゴリを開いた状態で復元
+  updatePreview();
+  if (state.savedAt) updateSaveStatus(state.savedAt);
+}
+
+function updateSaveStatus(ts) {
+  const el = document.getElementById('saveStatus');
+  if (!el) return;
+  const d = new Date(ts);
+  el.textContent = `この端末に自動保存済み: ${d.toLocaleString('ja-JP')}`;
+}
+
+function clearForm() {
+  if (!confirm('入力内容(患者氏名・選択項目・説明文・補足コメント)をすべてクリアします。よろしいですか?\n※画像ライブラリと画像の選択状態は削除されません。')) {
+    return;
+  }
+  suppressSave = true;
+  document.getElementById('patientName').value = '';
+  document.getElementById('handwriteName').checked = true;   // 既定の手書きモードに戻す
+  document.getElementById('patientName').disabled = true;
+  const defaultRadio = document.querySelector('input[name="hfType"][value="不明"]');
+  if (defaultRadio) defaultRadio.checked = true;
+  document.querySelectorAll('input[data-cat]').forEach(cb => { cb.checked = false; });
+  document.getElementById('causeUnknown').checked = false;
+  document.getElementById('otherCauseText').value = '';
+  document.getElementById('otherExacText').value = '';
+  document.getElementById('otherTestText').value = '';
+  document.getElementById('otherLifeText').value = '';
+  document.getElementById('freeNote').value = '';
+  document.getElementById('generatedText').value = '';
+  manuallyEdited = false;
+  suppressSave = false;
+  localStorage.removeItem(FORM_STATE_KEY);
+  document.getElementById('saveStatus').textContent = '';
+  document.querySelectorAll('details.cat').forEach(d => { d.open = false; });
+  updateCatCounts(false);
+  updatePreview();
+}
+
+// 入力変更を監視して自動保存・バッジ更新
+document.getElementById('handwriteName').addEventListener('change', () => {
+  const handwrite = document.getElementById('handwriteName').checked;
+  document.getElementById('patientName').disabled = handwrite;
+  if (handwrite) {
+    document.getElementById('patientName').value = '';  // 端末に氏名を残さない
+  }
+  updatePreview();
+  saveFormState();  // 即時保存(保存済みの氏名を確実に消すため)
+});
+document.getElementById('freeNote').addEventListener('input', scheduleSave);
+document.getElementById('otherCauseText').addEventListener('input', () => { updateCatCounts(false); scheduleSave(); });
+['otherExacText', 'otherTestText', 'otherLifeText'].forEach(id => {
+  document.getElementById(id).addEventListener('input', scheduleSave);
+});
+document.querySelectorAll('input[name="hfType"]').forEach(r => r.addEventListener('change', scheduleSave));
+document.querySelectorAll('input[data-cat], #causeUnknown').forEach(cb => cb.addEventListener('change', () => { updateCatCounts(false); scheduleSave(); }));
+// タブを閉じる直前にも保存(デバウンス中の取りこぼし防止)
+window.addEventListener('beforeunload', () => { if (!suppressSave) saveFormState(); });
+
+/* ============ 画像ライブラリ(プリセット + IndexedDB) ============ */
+
+const DB_NAME = 'hfExplainImageDB';
+const STORE_NAME = 'images';
+const MAX_SELECTED = 4;
+const PRESET_SELECTION_KEY = 'hfTool_presetSelections';
+
+/* --- 標準画像(本ファイルに埋め込み登録される画像) ---
+   ここに {id, name, svg} または {id, name, dataUrl} 形式で追加すると、
+   全端末で共通の「標準画像」としてライブラリに表示されます。
+   現在は未登録(ユーザー提供の図を今後ここに埋め込む運用)。 */
+const PRESET_IMAGES = [];
+
+const PRESET_HIDDEN_KEY = 'hfTool_presetHidden';
+
+function getHiddenPresets() {
+  try {
+    return JSON.parse(localStorage.getItem(PRESET_HIDDEN_KEY)) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function setHiddenPresets(arr) {
+  localStorage.setItem(PRESET_HIDDEN_KEY, JSON.stringify(arr));
+}
+
+// svg または dataUrl のどちらの形式でも表示できるようにする
+function presetSrc(preset) {
+  return preset.dataUrl ? preset.dataUrl : svgToDataUrl(preset.svg);
+}
+
+function svgToDataUrl(svg) {
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+function getPresetSelections() {
+  try {
+    return JSON.parse(localStorage.getItem(PRESET_SELECTION_KEY)) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function setPresetSelections(obj) {
+  localStorage.setItem(PRESET_SELECTION_KEY, JSON.stringify(obj));
+}
+
+async function getCombinedSelectedCount() {
+  const presetSelections = getPresetSelections();
+  const hidden = getHiddenPresets();
+  const dbImages = await getAllImagesFromDB();
+  let count = 0;
+  PRESET_IMAGES.forEach(p => {
+    if (!hidden.includes(p.id) && presetSelections[p.id]) count++;
+  });
+  dbImages.forEach(item => { if (item.selected) count++; });
+  return count;
+}
+
+function openImageDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = (e) => reject(e);
+  });
+}
+
+async function addImageToDB(name, dataUrl) {
+  const db = await openImageDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).add({ name, dataUrl, selected: false });
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e);
+  });
+}
+
+async function getAllImagesFromDB() {
+  const db = await openImageDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const req = tx.objectStore(STORE_NAME).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = (e) => reject(e);
+  });
+}
+
+async function updateImageInDB(item) {
+  const db = await openImageDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).put(item);
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e);
+  });
+}
+
+async function deleteImageFromDB(id) {
+  const db = await openImageDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    tx.objectStore(STORE_NAME).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = (e) => reject(e);
+  });
+}
+
+async function renderImageLibrary() {
+  const grid = document.getElementById('imageLibGrid');
+  grid.innerHTML = '';
+
+  const presetSelections = getPresetSelections();
+  const hidden = getHiddenPresets();
+  const dbImages = await getAllImagesFromDB();
+  const visiblePresets = PRESET_IMAGES.filter(p => !hidden.includes(p.id));
+
+  let selectedCount = 0;
+  visiblePresets.forEach(p => { if (presetSelections[p.id]) selectedCount++; });
+  dbImages.forEach(item => { if (item.selected) selectedCount++; });
+
+  // --- 標準(埋め込み)画像 ---
+  visiblePresets.forEach(preset => {
+    const wrap = document.createElement('div');
+    wrap.className = 'image-item';
+
+    const img = document.createElement('img');
+    img.src = presetSrc(preset);
+    wrap.appendChild(img);
+
+    const badge = document.createElement('div');
+    badge.className = 'img-badge';
+    badge.textContent = '標準画像';
+    wrap.appendChild(badge);
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'img-name';
+    nameEl.textContent = preset.name;
+    wrap.appendChild(nameEl);
+
+    const label = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!presetSelections[preset.id];
+    cb.addEventListener('change', async () => {
+      const sels = getPresetSelections();
+      const currentSelected = await getCombinedSelectedCount();
+      if (cb.checked && currentSelected >= MAX_SELECTED) {
+        alert(`説明用紙に挿入できる画像は最大${MAX_SELECTED}枚までです。`);
+        cb.checked = false;
+        return;
+      }
+      sels[preset.id] = cb.checked;
+      setPresetSelections(sels);
+      renderImageLibrary();
+      renderSheetImages();
+    });
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode('説明用紙に使用'));
+    wrap.appendChild(label);
+
+    // 標準画像はファイルからは消せないため「非表示」で減らせるようにする
+    const hideBtn = document.createElement('button');
+    hideBtn.className = 'btn danger-outline';
+    hideBtn.textContent = '非表示';
+    hideBtn.addEventListener('click', () => {
+      if (confirm(`標準画像「${preset.name}」を一覧から非表示にしますか?\n(あとで「非表示の標準画像を再表示」ボタンで戻せます)`)) {
+        const h = getHiddenPresets();
+        if (!h.includes(preset.id)) h.push(preset.id);
+        setHiddenPresets(h);
+        const sels = getPresetSelections();
+        sels[preset.id] = false;  // 非表示にしたら選択も解除
+        setPresetSelections(sels);
+        renderImageLibrary();
+        renderSheetImages();
+      }
+    });
+    wrap.appendChild(hideBtn);
+
+    grid.appendChild(wrap);
+  });
+
+  // --- アップロード画像 ---
+  dbImages.forEach(item => {
+    const wrap = document.createElement('div');
+    wrap.className = 'image-item';
+
+    const img = document.createElement('img');
+    img.src = item.dataUrl;
+    wrap.appendChild(img);
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'img-name';
+    nameEl.textContent = item.name;
+    wrap.appendChild(nameEl);
+
+    const label = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = !!item.selected;
+    cb.addEventListener('change', async () => {
+      const currentSelected = await getCombinedSelectedCount();
+      if (cb.checked && currentSelected >= MAX_SELECTED) {
+        alert(`説明用紙に挿入できる画像は最大${MAX_SELECTED}枚までです。`);
+        cb.checked = false;
+        return;
+      }
+      item.selected = cb.checked;
+      await updateImageInDB(item);
+      renderImageLibrary();
+      renderSheetImages();
+    });
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode('説明用紙に使用'));
+    wrap.appendChild(label);
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn danger-outline';
+    delBtn.textContent = '削除';
+    delBtn.addEventListener('click', async () => {
+      if (confirm(`「${item.name}」をライブラリから削除しますか?`)) {
+        await deleteImageFromDB(item.id);
+        renderImageLibrary();
+        renderSheetImages();
+      }
+    });
+    wrap.appendChild(delBtn);
+
+    grid.appendChild(wrap);
+  });
+
+  document.getElementById('selectedCount').textContent = `選択中: ${selectedCount} / ${MAX_SELECTED}`;
+
+  // 非表示にした標準画像がある場合は再表示ボタンを出す
+  const restoreWrap = document.getElementById('presetRestoreWrap');
+  restoreWrap.innerHTML = '';
+  if (hidden.length > 0) {
+    const btn = document.createElement('button');
+    btn.className = 'btn outline';
+    btn.textContent = `非表示の標準画像を再表示(${hidden.length}件)`;
+    btn.addEventListener('click', () => {
+      setHiddenPresets([]);
+      renderImageLibrary();
+      renderSheetImages();
+    });
+    restoreWrap.appendChild(btn);
+  }
+}
+
+async function renderSheetImages() {
+  const container = document.getElementById('sheetImages');
+  container.innerHTML = '';
+
+  const presetSelections = getPresetSelections();
+  const hidden = getHiddenPresets();
+  PRESET_IMAGES.forEach(preset => {
+    if (!hidden.includes(preset.id) && presetSelections[preset.id]) {
+      const img = document.createElement('img');
+      img.src = presetSrc(preset);
+      img.alt = preset.name;
+      container.appendChild(img);
+    }
+  });
+
+  const dbImages = await getAllImagesFromDB();
+  dbImages.filter(i => i.selected).forEach(item => {
+    const img = document.createElement('img');
+    img.src = item.dataUrl;
+    img.alt = item.name;
+    container.appendChild(img);
+  });
+}
+
+document.getElementById('imageUpload').addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files);
+  for (const file of files) {
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    await addImageToDB(file.name, dataUrl);
+  }
+  e.target.value = '';
+  renderImageLibrary();
+});
+
+// 初期表示(保存済みの入力内容を復元してから描画)
+restoreFormState();
+renderImageLibrary();
+renderSheetImages();
+updatePreview();
+</script>
+</body>
+</html>
