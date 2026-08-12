@@ -308,6 +308,40 @@
     gap: 12px;
     flex-wrap: wrap;
   }
+  /* カード見出し行(タイトル + 右寄せ操作ボタン) */
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .card-head h2 { margin-bottom: 0; }
+  .font-size-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .font-size-row select {
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.85rem;
+  }
+  textarea#replyText {
+    width: 100%;
+    min-height: 200px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.98rem;
+    line-height: 1.9;
+    font-family: inherit;
+    resize: vertical;
+  }
 
   /* 印刷プレビュー */
   #printArea {
@@ -315,10 +349,17 @@
     border: 1px dashed var(--border);
     border-radius: 8px;
     padding: 28px 32px;
+    --sheet-font: 1.02rem;   /* 文字サイズ切り替えで書き換わる */
+  }
+  #printArea .sheet-date {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 6px;
   }
   #printArea h2.sheet-title {
     text-align: center;
-    font-size: 1.25rem;
+    font-size: calc(var(--sheet-font) * 1.22);
     color: var(--navy);
     margin: 0 0 18px;
     border: none;
@@ -326,7 +367,7 @@
   }
   #printArea .sheet-text {
     white-space: pre-wrap;
-    font-size: 1.02rem;
+    font-size: var(--sheet-font);
     line-height: 2;
   }
   #printArea .sheet-images {
@@ -411,8 +452,8 @@
     <details class="cat">
       <summary>虚血性心疾患 <span class="cat-count"></span></summary>
       <div class="cat-body choice-grid">
-        <label><input type="checkbox" data-cat="base" value="心筋梗塞(陳旧性)"> 心筋梗塞(陳旧性)</label>
-        <label><input type="checkbox" data-cat="base" value="心筋梗塞(急性)"> 心筋梗塞(急性)</label>
+        <label><input type="checkbox" data-cat="base" value="心筋梗塞(陳旧性)" data-phrase="以前に起きた心筋梗塞"> 心筋梗塞(陳旧性)</label>
+        <label><input type="checkbox" data-cat="base" value="心筋梗塞(急性)" data-phrase="今回起きた急性の心筋梗塞"> 心筋梗塞(急性)</label>
         <label><input type="checkbox" data-cat="base" value="狭心症"> 狭心症</label>
       </div>
     </details>
@@ -427,23 +468,23 @@
             </tr>
             <tr>
               <td>大動脈弁</td>
-              <td><input type="checkbox" data-cat="valve" value="大動脈弁狭窄症"></td>
-              <td><input type="checkbox" data-cat="valve" value="大動脈弁の逆流"></td>
+              <td><input type="checkbox" data-cat="valve" value="大動脈弁狭窄症" data-phrase="大動脈弁が狭くなっていること"></td>
+              <td><input type="checkbox" data-cat="valve" value="大動脈弁の逆流" data-phrase="大動脈弁での血液の逆流"></td>
             </tr>
             <tr>
               <td>僧帽弁</td>
-              <td><input type="checkbox" data-cat="valve" value="僧帽弁狭窄症"></td>
-              <td><input type="checkbox" data-cat="valve" value="僧帽弁の逆流"></td>
+              <td><input type="checkbox" data-cat="valve" value="僧帽弁狭窄症" data-phrase="僧帽弁が狭くなっていること"></td>
+              <td><input type="checkbox" data-cat="valve" value="僧帽弁の逆流" data-phrase="僧帽弁での血液の逆流"></td>
             </tr>
             <tr>
               <td>三尖弁</td>
-              <td><input type="checkbox" data-cat="valve" value="三尖弁狭窄症"></td>
-              <td><input type="checkbox" data-cat="valve" value="三尖弁の逆流"></td>
+              <td><input type="checkbox" data-cat="valve" value="三尖弁狭窄症" data-phrase="三尖弁が狭くなっていること"></td>
+              <td><input type="checkbox" data-cat="valve" value="三尖弁の逆流" data-phrase="三尖弁での血液の逆流"></td>
             </tr>
             <tr>
               <td>肺動脈弁</td>
-              <td><input type="checkbox" data-cat="valve" value="肺動脈弁狭窄症"></td>
-              <td><input type="checkbox" data-cat="valve" value="肺動脈弁の逆流"></td>
+              <td><input type="checkbox" data-cat="valve" value="肺動脈弁狭窄症" data-phrase="肺動脈弁が狭くなっていること"></td>
+              <td><input type="checkbox" data-cat="valve" value="肺動脈弁の逆流" data-phrase="肺動脈弁での血液の逆流"></td>
             </tr>
           </table>
           <div class="note">複数の弁・病態を同時に選択できます(連合弁膜症・複合弁膜症に対応)。</div>
@@ -454,7 +495,7 @@
     <details class="cat">
       <summary>心筋症 <span class="cat-count"></span></summary>
       <div class="cat-body choice-grid">
-        <label><input type="checkbox" data-cat="base" value="高血圧性心疾患"> 高血圧性心疾患</label>
+        <label><input type="checkbox" data-cat="base" value="高血圧性心疾患" data-phrase="高血圧による心臓への負担"> 高血圧性心疾患</label>
         <label><input type="checkbox" data-cat="base" value="拡張型心筋症"> 拡張型心筋症</label>
         <label><input type="checkbox" data-cat="base" value="肥大型心筋症"> 肥大型心筋症</label>
         <label><input type="checkbox" data-cat="base" value="心サルコイドーシス"> 心サルコイドーシス</label>
@@ -468,7 +509,7 @@
       <div class="cat-body choice-grid">
         <label><input type="checkbox" data-cat="base" value="心房細動"> 心房細動</label>
         <label><input type="checkbox" data-cat="base" value="心房頻拍"> 心房頻拍</label>
-        <label><input type="checkbox" data-cat="base" value="頻回の心室性期外収縮"> 頻回の心室性期外収縮</label>
+        <label><input type="checkbox" data-cat="base" value="頻回の心室性期外収縮" data-phrase="脈の乱れ(心室性期外収縮)が多いこと"> 頻回の心室性期外収縮</label>
       </div>
     </details>
 
@@ -492,18 +533,18 @@
   <div class="card">
     <h2>③ 今回の増悪要因(誘因)と考えられるもの(複数選択可)</h2>
     <div class="choice-grid">
-      <label><input type="checkbox" data-cat="exac" value="塩分・水分摂取過多"> 塩分・水分摂取過多</label>
-      <label><input type="checkbox" data-cat="exac" value="内服薬の飲み忘れ・自己中断"> 内服薬の飲み忘れ・自己中断</label>
-      <label><input type="checkbox" data-cat="exac" value="感染症(肺炎・感冒など)"> 感染症(肺炎・感冒など)</label>
-      <label><input type="checkbox" data-cat="exac" value="不整脈の出現・悪化"> 不整脈の出現・悪化</label>
-      <label><input type="checkbox" data-cat="exac" value="血圧コントロール不良"> 血圧コントロール不良</label>
-      <label><input type="checkbox" data-cat="exac" value="過労・身体的・精神的ストレス"> 過労・身体的・精神的ストレス</label>
-      <label><input type="checkbox" data-cat="exac" value="過度な運動制限または運動不足"> 過度な運動制限または運動不足</label>
+      <label><input type="checkbox" data-cat="exac" value="塩分・水分摂取過多" data-phrase="塩分や水分のとりすぎ"> 塩分・水分摂取過多</label>
+      <label><input type="checkbox" data-cat="exac" value="内服薬の飲み忘れ・自己中断" data-phrase="お薬の飲み忘れや自己判断での中止"> 内服薬の飲み忘れ・自己中断</label>
+      <label><input type="checkbox" data-cat="exac" value="感染症(肺炎・感冒など)" data-phrase="肺炎やかぜなどの感染症"> 感染症(肺炎・感冒など)</label>
+      <label><input type="checkbox" data-cat="exac" value="不整脈の出現・悪化" data-phrase="脈の乱れ(不整脈)"> 不整脈の出現・悪化</label>
+      <label><input type="checkbox" data-cat="exac" value="血圧コントロール不良" data-phrase="血圧が高い状態が続いていたこと"> 血圧コントロール不良</label>
+      <label><input type="checkbox" data-cat="exac" value="過労・身体的・精神的ストレス" data-phrase="疲れや心身のストレス"> 過労・身体的・精神的ストレス</label>
+      <label><input type="checkbox" data-cat="exac" value="過度な運動制限または運動不足" data-phrase="からだを動かす機会が減っていたこと"> 過度な運動制限または運動不足</label>
       <label><input type="checkbox" data-cat="exac" value="貧血"> 貧血</label>
-      <label><input type="checkbox" data-cat="exac" value="腎機能の悪化"> 腎機能の悪化</label>
-      <label><input type="checkbox" data-cat="exac" value="薬剤(消炎鎮痛薬など)の影響"> 薬剤(消炎鎮痛薬など)の影響</label>
-      <label><input type="checkbox" data-cat="exac" value="季節・気温の変化(暑さ・寒さ)"> 季節・気温の変化(暑さ・寒さ)</label>
-      <label><input type="checkbox" data-cat="exac" value="飲酒"> 飲酒</label>
+      <label><input type="checkbox" data-cat="exac" value="腎機能の悪化" data-phrase="腎臓のはたらきの低下"> 腎機能の悪化</label>
+      <label><input type="checkbox" data-cat="exac" value="薬剤(消炎鎮痛薬など)の影響" data-phrase="痛み止めなどのお薬の影響"> 薬剤(消炎鎮痛薬など)の影響</label>
+      <label><input type="checkbox" data-cat="exac" value="季節・気温の変化(暑さ・寒さ)" data-phrase="暑さや寒さなどの気温の変化"> 季節・気温の変化(暑さ・寒さ)</label>
+      <label><input type="checkbox" data-cat="exac" value="飲酒" data-phrase="お酒の影響"> 飲酒</label>
     </div>
     <div class="other-free-row">
       <label class="other-free-label" for="otherExacText">その他の増悪要因(自由記載・「、」区切りで複数入力可)</label>
@@ -515,11 +556,11 @@
   <div class="card">
     <h2>④ この入院中に行う検査・治療(複数選択可)</h2>
     <div class="choice-grid">
-      <label><input type="checkbox" data-cat="test" value="心エコー検査"> 心エコー検査</label>
+      <label><input type="checkbox" data-cat="test" value="心エコー検査" data-phrase="心臓の超音波(エコー)検査"> 心エコー検査</label>
       <label><input type="checkbox" data-cat="test" value="血液検査"> 血液検査</label>
       <label><input type="checkbox" data-cat="test" value="心臓カテーテル検査"> 心臓カテーテル検査</label>
-      <label><input type="checkbox" data-cat="test" value="利尿薬による体液管理"> 利尿薬による体液管理</label>
-      <label><input type="checkbox" data-cat="test" value="内服薬の調整(導入・増量)"> 内服薬の調整(導入・増量)</label>
+      <label><input type="checkbox" data-cat="test" value="利尿薬による体液管理" data-phrase="利尿薬を使って体にたまった水分を減らす治療"> 利尿薬による体液管理</label>
+      <label><input type="checkbox" data-cat="test" value="内服薬の調整(導入・増量)" data-phrase="お薬の調整"> 内服薬の調整(導入・増量)</label>
       <label><input type="checkbox" data-cat="test" value="心臓リハビリテーション"> 心臓リハビリテーション</label>
       <label><input type="checkbox" data-cat="test" value="生活指導・栄養指導"> 生活指導・栄養指導</label>
     </div>
@@ -533,14 +574,14 @@
   <div class="card">
     <h2>⑤ 再発予防のための生活指導項目(複数選択可)</h2>
     <div class="choice-grid">
-      <label><input type="checkbox" data-cat="life" value="塩分制限(1日6g未満)"> 塩分制限(1日6g未満)</label>
-      <label><input type="checkbox" data-cat="life" value="水分管理"> 水分管理</label>
-      <label><input type="checkbox" data-cat="life" value="毎日同じ条件での体重測定"> 毎日同じ条件での体重測定</label>
-      <label><input type="checkbox" data-cat="life" value="内服薬の継続"> 内服薬の継続</label>
-      <label><input type="checkbox" data-cat="life" value="適度な運動の継続"> 適度な運動の継続</label>
-      <label><input type="checkbox" data-cat="life" value="感染予防(ワクチン接種を含む)"> 感染予防(ワクチン接種を含む)</label>
-      <label><input type="checkbox" data-cat="life" value="禁煙・節酒"> 禁煙・節酒</label>
-      <label><input type="checkbox" data-cat="life" value="症状悪化時の早期受診"> 症状悪化時の早期受診(増悪サインへの注意)</label>
+      <label><input type="checkbox" data-cat="life" value="塩分制限(1日6g未満)" data-phrase="塩分を1日6g未満にひかえること"> 塩分制限(1日6g未満)</label>
+      <label><input type="checkbox" data-cat="life" value="水分管理" data-phrase="水分のとり方に気をつけること"> 水分管理</label>
+      <label><input type="checkbox" data-cat="life" value="毎日同じ条件での体重測定" data-phrase="毎日決まった時間に体重をはかること"> 毎日同じ条件での体重測定</label>
+      <label><input type="checkbox" data-cat="life" value="内服薬の継続" data-phrase="お薬を続けること"> 内服薬の継続</label>
+      <label><input type="checkbox" data-cat="life" value="適度な運動の継続" data-phrase="無理のない範囲でからだを動かすこと"> 適度な運動の継続</label>
+      <label><input type="checkbox" data-cat="life" value="感染予防(ワクチン接種を含む)" data-phrase="手洗いやワクチン接種で感染症を防ぐこと"> 感染予防(ワクチン接種を含む)</label>
+      <label><input type="checkbox" data-cat="life" value="禁煙・節酒" data-phrase="たばこをやめてお酒をひかえること"> 禁煙・節酒</label>
+      <label><input type="checkbox" data-cat="life" value="症状悪化時の早期受診" data-phrase="息切れやむくみが強くなったときに早めに受診すること"> 症状悪化時の早期受診(増悪サインへの注意)</label>
     </div>
     <div class="other-free-row">
       <label class="other-free-label" for="otherLifeText">その他の生活指導(自由記載・「、」区切りで複数入力可)</label>
@@ -574,8 +615,21 @@
 
   <!-- 生成文(編集可) -->
   <div class="card">
-    <h2>説明文(生成後に自由に編集できます)</h2>
+    <div class="card-head">
+      <h2>説明文(生成後に自由に編集できます)</h2>
+      <button class="btn outline" id="copyTextBtn">説明文をコピー</button>
+    </div>
     <textarea id="generatedText" placeholder="上の項目を選択して「説明文を生成・更新」を押してください"></textarea>
+  </div>
+
+  <!-- 紹介医への返書(編集可・印刷対象外) -->
+  <div class="card">
+    <div class="card-head">
+      <h2>紹介医へのお返事(コピーして返書作成システムに貼り付け)</h2>
+      <button class="btn outline" id="copyReplyBtn">返事をコピー</button>
+    </div>
+    <textarea id="replyText" placeholder="「説明文を生成・更新」を押すと、同じ入力内容から返事の文面も作成されます"></textarea>
+    <div class="note">宛名・差出人・頭語(拝啓など)・日付は含まれません。医療者向けの表現で作成されます。この内容は印刷されません。</div>
   </div>
 
   <!-- 画像ライブラリ -->
@@ -595,8 +649,18 @@
     <h2>印刷プレビュー</h2>
     <div class="action-bar">
       <button class="btn secondary" onclick="window.print()">この内容を印刷する</button>
+      <span class="font-size-row">
+        <label for="fontScale">文字サイズ</label>
+        <select id="fontScale">
+          <option value="0.90">小</option>
+          <option value="1.02" selected>標準</option>
+          <option value="1.16">大</option>
+          <option value="1.32">特大</option>
+        </select>
+      </span>
     </div>
     <div id="printArea">
+      <div class="sheet-date" id="sheetDate"></div>
       <h2 class="sheet-title" id="sheetTitle">心不全についてのご説明</h2>
       <div class="sheet-text" id="sheetText">(説明文を生成すると、ここに表示されます)</div>
       <div class="sheet-images" id="sheetImages"></div>
@@ -612,11 +676,17 @@
 <script>
 /* ============ 文章生成ロジック ============ */
 
-function joinJapaneseList(items) {
+// 項目を自然な日本語の列挙にする
+// opts.etc: 2件以上のときだけ「など」を付ける(1件に「など」は不自然なため)
+function joinJapaneseList(items, opts) {
+  const etc = opts && opts.etc && items.length > 1;
   if (items.length === 0) return '';
   if (items.length === 1) return items[0];
-  if (items.length === 2) return items[0] + 'や' + items[1];
-  return items.slice(0, -1).join('、') + '、' + items[items.length - 1] + 'など';
+  if (items.length === 2) {
+    // 「など」を付ける場合は例示のニュアンスの「や」が自然
+    return items[0] + (etc ? 'や' : 'と') + items[1] + (etc ? 'など' : '');
+  }
+  return items.join('、') + (etc ? 'など' : '');
 }
 
 function getCheckedValues(selector) {
@@ -625,10 +695,31 @@ function getCheckedValues(selector) {
     .map(el => el.value);
 }
 
+// 患者さん向けの平易な表現(data-phrase)を優先して取り出す。
+// value は保存キーを兼ねるため変更せず、説明用紙だけ表現を差し替える。
+function phraseOf(el) {
+  return el.dataset.phrase || el.value;
+}
+
+function getCheckedPhrases(selector) {
+  return Array.from(document.querySelectorAll(selector))
+    .filter(el => el.checked)
+    .map(phraseOf);
+}
+
+// 説明用紙(患者さん向け)
 const hfTypeSentences = {
-  'HFrEF': '心臓は血液を送り出すポンプとしての力(収縮機能)が低下しており、これが心不全の主な要因の一つと考えられます。',
-  'HFmrEF': '心臓のポンプとしての力(収縮機能)はやや低下していますが、一部の機能は保たれている状態です。',
-  'HFpEF': '心臓のポンプとしての力(収縮機能)は保たれていますが、心臓の壁が硬くなり、血液を取り込む際の広がり(拡張機能)が低下しており、これが心不全の主な要因の一つと考えられます。',
+  'HFrEF': '検査では、心臓が血液を送り出す力(ポンプの力)が弱くなっていました。これが心不全の大きな要因と考えられます。',
+  'HFmrEF': '検査では、心臓が血液を送り出す力(ポンプの力)は少し弱くなっていましたが、保たれている部分もありました。',
+  'HFpEF': '検査では、心臓が血液を送り出す力(ポンプの力)は保たれていましたが、心臓の壁が硬くなり、血液をためこむための広がりが悪くなっていました。これが心不全の大きな要因と考えられます。',
+  '不明': ''
+};
+
+// 返書(紹介医向け)
+const hfTypeReplyLabels = {
+  'HFrEF': 'HFrEF(左室収縮能低下)',
+  'HFmrEF': 'HFmrEF(左室収縮能軽度低下)',
+  'HFpEF': 'HFpEF(左室収縮能保持)',
   '不明': ''
 };
 
@@ -667,65 +758,76 @@ function updateCatCounts(openSelected) {
   });
 }
 
+// 選択内容を1か所にまとめる(説明文・返書の両方から使う)
+function collectSelections() {
+  const hfTypeEl = document.querySelector('input[name="hfType"]:checked');
+  return {
+    hfType: hfTypeEl ? hfTypeEl.value : '不明',
+    causeUnknown: document.getElementById('causeUnknown').checked,
+    // 患者さん向け(平易語)
+    causePhrases: getCheckedPhrases('input[data-cat="base"]')
+      .concat(getCheckedPhrases('input[data-cat="valve"]'), parseOtherCauses()),
+    exacPhrases: getCheckedPhrases('input[data-cat="exac"]').concat(parseFreeList('otherExacText')),
+    testPhrases: getCheckedPhrases('input[data-cat="test"]').concat(parseFreeList('otherTestText')),
+    lifePhrases: getCheckedPhrases('input[data-cat="life"]').concat(parseFreeList('otherLifeText')),
+    // 医療者向け(医学用語のまま)
+    causeTerms: getCheckedValues('input[data-cat="base"]')
+      .concat(getCheckedValues('input[data-cat="valve"]'), parseOtherCauses()),
+    exacTerms: getCheckedValues('input[data-cat="exac"]').concat(parseFreeList('otherExacText')),
+    testTerms: getCheckedValues('input[data-cat="test"]').concat(parseFreeList('otherTestText'))
+  };
+}
+
 function generateText() {
   // 手動編集の上書き保護(仕様書 既知課題1への対応)
   const currentText = document.getElementById('generatedText').value.trim();
-  if (manuallyEdited && currentText) {
-    if (!confirm('説明文は手動で編集されています。\n再生成すると編集内容は上書きされます。続行しますか?')) {
+  const currentReply = document.getElementById('replyText').value.trim();
+  if ((manuallyEdited && currentText) || (replyManuallyEdited && currentReply)) {
+    if (!confirm('説明文または返事の文面は手動で編集されています。\n再生成すると編集内容は上書きされます。続行しますか?')) {
       return;
     }
   }
 
   const name = getDisplayName();
+  const s = collectSelections();
 
-  // ① 病型
-  const hfTypeEl = document.querySelector('input[name="hfType"]:checked');
-  const hfType = hfTypeEl ? hfTypeEl.value : '不明';
-  const hfSentence = hfTypeSentences[hfType];
+  // 氏名は書き出しの1回のみ。以降の段落は主語を省略して読みやすくする。
+  let text = `${name}さんは、心不全が悪化したため入院となりました。心不全とは、心臓のはたらきが弱まり、全身に十分な血液を送り出せなくなった状態のことをいいます。`;
+  const hfSentence = hfTypeSentences[s.hfType];
+  if (hfSentence) {
+    text += hfSentence;
+  }
 
-  // ② 基礎疾患(通常項目 + 弁膜症マトリクス + 自由記載)
-  const baseItems = getCheckedValues('input[data-cat="base"]');
-  const valveItems = getCheckedValues('input[data-cat="valve"]');
-  const otherItems = parseOtherCauses();
-  const causeUnknown = document.getElementById('causeUnknown').checked;
-  const allCauseItems = baseItems.concat(valveItems, otherItems);
-
-  let causeSentence;
-  if (allCauseItems.length === 0) {
-    causeSentence = '現時点では原因がはっきりと分かっていないため、今後入院中に詳しい検査を行いたいと思います。';
+  // ② 原因
+  text += '\n\n';
+  if (s.causePhrases.length === 0) {
+    text += '心不全はさまざまな病気をきっかけに起こりますが、その原因は、現時点でははっきりしていません。入院中に詳しい検査を行い、原因を調べていきます。';
   } else {
-    causeSentence = joinJapaneseList(allCauseItems) + 'が原因の可能性があると考えています。';
-    if (causeUnknown) {
-      causeSentence += 'また、他に原因となる病気が隠れていないか、入院中にさらに詳しい検査を行う予定です。';
+    text += `心不全はさまざまな病気をきっかけに起こりますが、その原因としては、${joinJapaneseList(s.causePhrases)}が考えられます。`;
+    if (s.causeUnknown) {
+      text += 'あわせて、ほかに原因となる病気が隠れていないか、入院中に詳しく調べていきます。';
     }
   }
 
-  // ③ 増悪要因(チェック + 自由記載)
-  const exacItems = getCheckedValues('input[data-cat="exac"]').concat(parseFreeList('otherExacText'));
-  let exacSentence;
-  if (exacItems.length === 0) {
-    exacSentence = `${name}さんにおいては、現在増悪要因を確認中です。`;
+  // ③ 悪化のきっかけ
+  text += '\n\nまた、心不全は弱った心臓に負担がかかると悪化しやすくなります。';
+  if (s.exacPhrases.length === 0) {
+    text += '今回、悪化のきっかけになったことについては、現在確認を進めています。';
   } else {
-    exacSentence = `${name}さんにおいては、${joinJapaneseList(exacItems)}が増悪要因と考えられています。`;
+    text += `今回は、${joinJapaneseList(s.exacPhrases)}が悪化のきっかけになったと考えられます。`;
   }
 
-  // ④ 検査・治療(チェック + 自由記載)
-  const testItems = getCheckedValues('input[data-cat="test"]').concat(parseFreeList('otherTestText'));
-  const testPhrase = testItems.length > 0 ? joinJapaneseList(testItems) : '必要な検査・治療';
+  // ④ 入院中の予定
+  text += '\n\n';
+  text += s.testPhrases.length > 0
+    ? `この入院中は、${joinJapaneseList(s.testPhrases)}を行っていく予定です。`
+    : 'この入院中は、必要な検査と治療を行っていく予定です。';
 
-  // ⑤ 生活指導(チェック + 自由記載)
-  const lifeItems = getCheckedValues('input[data-cat="life"]').concat(parseFreeList('otherLifeText'));
-  const lifePhrase = lifeItems.length > 0 ? joinJapaneseList(lifeItems) : '生活上の注意点';
-
-  // 全体組み立て
-  let text = '';
-  text += `${name}さんは、心不全増悪のために入院となりました。\n`;
-  text += `心不全は、何が原因であっても発症しますが、${name}さんの心不全は、${causeSentence}\n`;
-  if (hfSentence) {
-    text += `また、${name}さんの${hfSentence}\n`;
-  }
-  text += `\nまた、心不全は弱った心臓に何らかの負担がかかると発症します。${exacSentence}\n`;
-  text += `\nこの入院中に${testPhrase}を行うだけではなく、こういった増悪要因を理解し、心不全を再発させないための生活の送り方(${lifePhrase})に関してもよく理解していただきたいと思います。`;
+  // ⑤ 退院後に向けて
+  text += '\n\n';
+  text += s.lifePhrases.length > 0
+    ? `あわせて、退院後に心不全をくり返さないために、${joinJapaneseList(s.lifePhrases, { etc: true })}にも一緒に取り組んでいきましょう。`
+    : 'あわせて、退院後に心不全をくり返さないための生活の送り方についても、一緒に確認していきましょう。';
 
   // ⑥ 今後の見通し・追加のご説明(選択式)
   const extraItems = getCheckedValues('input[data-cat="extra"]');
@@ -741,8 +843,46 @@ function generateText() {
 
   document.getElementById('generatedText').value = text;
   manuallyEdited = false;
+  createdAt = Date.now();          // 説明用紙の作成日として保持
+  generateReplyText(s);
   updatePreview();
   saveFormState();
+}
+
+/* ============ 紹介医への返事(医療者向け・印刷対象外) ============ */
+
+function generateReplyText(s) {
+  const sel = s || collectSelections();
+  const lines = [];
+
+  lines.push('このたびはご紹介いただき、誠にありがとうございました。');
+  lines.push('上記患者様は、心不全増悪の診断にて当科入院となりました。');
+
+  lines.push(sel.causeTerms.length > 0
+    ? `基礎心疾患としては、${joinJapaneseList(sel.causeTerms)}を認めております。`
+    : '基礎心疾患については、現在精査中です。');
+  if (sel.causeUnknown && sel.causeTerms.length > 0) {
+    lines.push('併せて、他に原因となる疾患がないか入院中に精査いたします。');
+  }
+
+  const hfLabel = hfTypeReplyLabels[sel.hfType];
+  if (hfLabel) {
+    lines.push(`心不全の病型は ${hfLabel} と考えております。`);
+  }
+
+  lines.push(sel.exacTerms.length > 0
+    ? `今回の増悪要因としては、${joinJapaneseList(sel.exacTerms)}が考えられます。`
+    : '今回の増悪要因については、現在検討中です。');
+
+  lines.push(sel.testTerms.length > 0
+    ? `入院中は、${joinJapaneseList(sel.testTerms)}を予定しております。`
+    : '入院中は、必要な検査・加療を予定しております。');
+
+  lines.push('今後の経過につきましては、改めてご報告させていただきます。');
+  lines.push('引き続きご高診のほど、何卒よろしくお願い申し上げます。');
+
+  document.getElementById('replyText').value = lines.join('\n');
+  replyManuallyEdited = false;
 }
 
 function updatePreview() {
@@ -750,11 +890,23 @@ function updatePreview() {
   document.getElementById('sheetTitle').textContent = `${name}さんへ:心不全についてのご説明`;
   const generated = document.getElementById('generatedText').value;
   document.getElementById('sheetText').textContent = generated || '(説明文を生成すると、ここに表示されます)';
+  updateSheetDate();
+}
+
+// 作成日(説明文を生成した日。未生成なら本日)を紙面に表示
+function updateSheetDate() {
+  const d = new Date(createdAt || Date.now());
+  document.getElementById('sheetDate').textContent =
+    `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
 document.getElementById('generatedText').addEventListener('input', () => {
   manuallyEdited = true;
   updatePreview();
+  scheduleSave();
+});
+document.getElementById('replyText').addEventListener('input', () => {
+  replyManuallyEdited = true;
   scheduleSave();
 });
 document.getElementById('patientName').addEventListener('input', () => {
@@ -765,8 +917,10 @@ document.getElementById('patientName').addEventListener('input', () => {
 /* ============ 入力内容のローカル自動保存(localStorage・外部送信なし) ============ */
 
 const FORM_STATE_KEY = 'hfTool_formState';
-let manuallyEdited = false;   // 説明文が手動編集されたか(再生成時の上書き保護に使用)
-let suppressSave = false;     // 復元処理中の保存抑止
+let manuallyEdited = false;       // 説明文が手動編集されたか(再生成時の上書き保護に使用)
+let replyManuallyEdited = false;  // 返事の文面が手動編集されたか
+let createdAt = null;             // 説明文を生成した日時(紙面の作成日として使用)
+let suppressSave = false;         // 復元処理中の保存抑止
 let saveTimer = null;
 
 function scheduleSave() {
@@ -793,6 +947,9 @@ function saveFormState() {
     freeNote: document.getElementById('freeNote').value,
     generatedText: document.getElementById('generatedText').value,
     manuallyEdited: manuallyEdited,
+    replyText: document.getElementById('replyText').value,
+    replyManuallyEdited: replyManuallyEdited,
+    createdAt: createdAt,
     savedAt: Date.now()
   };
   try {
@@ -833,6 +990,9 @@ function restoreFormState() {
   document.getElementById('freeNote').value = state.freeNote || '';
   document.getElementById('generatedText').value = state.generatedText || '';
   manuallyEdited = !!state.manuallyEdited;
+  document.getElementById('replyText').value = state.replyText || '';
+  replyManuallyEdited = !!state.replyManuallyEdited;
+  createdAt = state.createdAt || null;
   suppressSave = false;
 
   updateCatCounts(true);  // 選択済みカテゴリを開いた状態で復元
@@ -848,7 +1008,7 @@ function updateSaveStatus(ts) {
 }
 
 function clearForm() {
-  if (!confirm('入力内容(患者氏名・選択項目・説明文・補足コメント)をすべてクリアします。よろしいですか?\n※画像ライブラリと画像の選択状態は削除されません。')) {
+  if (!confirm('入力内容(患者氏名・選択項目・説明文・紹介医への返事・補足コメント)をすべてクリアします。よろしいですか?\n※画像ライブラリと画像の選択状態は削除されません。')) {
     return;
   }
   suppressSave = true;
@@ -865,7 +1025,10 @@ function clearForm() {
   document.getElementById('otherLifeText').value = '';
   document.getElementById('freeNote').value = '';
   document.getElementById('generatedText').value = '';
+  document.getElementById('replyText').value = '';
   manuallyEdited = false;
+  replyManuallyEdited = false;
+  createdAt = null;
   suppressSave = false;
   localStorage.removeItem(FORM_STATE_KEY);
   document.getElementById('saveStatus').textContent = '';
@@ -893,6 +1056,65 @@ document.querySelectorAll('input[name="hfType"]').forEach(r => r.addEventListene
 document.querySelectorAll('input[data-cat], #causeUnknown').forEach(cb => cb.addEventListener('change', () => { updateCatCounts(false); scheduleSave(); }));
 // タブを閉じる直前にも保存(デバウンス中の取りこぼし防止)
 window.addEventListener('beforeunload', () => { if (!suppressSave) saveFormState(); });
+
+/* ============ クリップボードへのコピー ============ */
+
+// file:// で開いた場合など navigator.clipboard が使えない環境向けに従来手段へ退避する
+async function copyTextArea(textareaId, btn) {
+  const ta = document.getElementById(textareaId);
+  const text = ta.value;
+  if (!text.trim()) {
+    alert('コピーする内容がありません。先に「説明文を生成・更新」を押してください。');
+    return;
+  }
+  let ok = false;
+  try {
+    await navigator.clipboard.writeText(text);
+    ok = true;
+  } catch (e) {
+    try {
+      ta.select();
+      ok = document.execCommand('copy');
+      ta.setSelectionRange(0, 0);
+      ta.blur();
+    } catch (e2) {
+      ok = false;
+    }
+  }
+  if (ok) {
+    const original = btn.textContent;
+    btn.textContent = 'コピーしました';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1500);
+  } else {
+    alert('コピーできませんでした。テキストを選択して手動でコピーしてください。');
+  }
+}
+
+document.getElementById('copyTextBtn').addEventListener('click', (e) => copyTextArea('generatedText', e.currentTarget));
+document.getElementById('copyReplyBtn').addEventListener('click', (e) => copyTextArea('replyText', e.currentTarget));
+
+/* ============ 印刷シートの文字サイズ ============ */
+
+const FONT_SCALE_KEY = 'hfTool_fontScale';
+
+function applyFontScale(value) {
+  document.getElementById('printArea').style.setProperty('--sheet-font', `${value}rem`);
+}
+
+function restoreFontScale() {
+  const saved = localStorage.getItem(FONT_SCALE_KEY);
+  const select = document.getElementById('fontScale');
+  if (saved && Array.from(select.options).some(o => o.value === saved)) {
+    select.value = saved;
+  }
+  applyFontScale(select.value);
+}
+
+document.getElementById('fontScale').addEventListener('change', (e) => {
+  applyFontScale(e.target.value);
+  localStorage.setItem(FONT_SCALE_KEY, e.target.value);
+});
 
 /* ============ 画像ライブラリ(プリセット + IndexedDB) ============ */
 
@@ -1190,6 +1412,7 @@ document.getElementById('imageUpload').addEventListener('change', async (e) => {
 
 // 初期表示(保存済みの入力内容を復元してから描画)
 restoreFormState();
+restoreFontScale();
 renderImageLibrary();
 renderSheetImages();
 updatePreview();
