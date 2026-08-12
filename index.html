@@ -1030,7 +1030,9 @@ function clearForm() {
   replyManuallyEdited = false;
   createdAt = null;
   suppressSave = false;
-  localStorage.removeItem(FORM_STATE_KEY);
+  try {
+    localStorage.removeItem(FORM_STATE_KEY);
+  } catch (e) { /* localStorage が使えない環境では何もしない */ }
   document.getElementById('saveStatus').textContent = '';
   document.querySelectorAll('details.cat').forEach(d => { d.open = false; });
   updateCatCounts(false);
@@ -1103,7 +1105,10 @@ function applyFontScale(value) {
 }
 
 function restoreFontScale() {
-  const saved = localStorage.getItem(FONT_SCALE_KEY);
+  let saved = null;
+  try {
+    saved = localStorage.getItem(FONT_SCALE_KEY);
+  } catch (e) { /* localStorage が使えない環境では既定値のまま */ }
   const select = document.getElementById('fontScale');
   if (saved && Array.from(select.options).some(o => o.value === saved)) {
     select.value = saved;
@@ -1113,7 +1118,11 @@ function restoreFontScale() {
 
 document.getElementById('fontScale').addEventListener('change', (e) => {
   applyFontScale(e.target.value);
-  localStorage.setItem(FONT_SCALE_KEY, e.target.value);
+  try {
+    localStorage.setItem(FONT_SCALE_KEY, e.target.value);
+  } catch (err) {
+    console.warn('文字サイズの保存に失敗しました:', err);
+  }
 });
 
 /* ============ 画像ライブラリ(プリセット + IndexedDB) ============ */
